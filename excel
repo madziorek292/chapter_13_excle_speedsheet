@@ -1,0 +1,67 @@
+#Załóżmy, że masz arkusz kalkulacyjny z danymi z amerykańskiego spisu ludności z 2010 roku i masz nudne zadanie przejrzenia tysięcy wierszy, aby policzyć zarówno całkowitą populację, jak i liczbę jednostek spisowych dla każdego hrabstwa. (Jednostka spisowa to po prostu obszar geograficzny zdefiniowany do celów spisowych). Każdy wiersz reprezentuje pojedynczą jednostkę spisową. Nazwijmy plik arkusza kalkulacyjnego censuspopdata.xlsx, który możesz pobrać z tego linku.
+
+#Oto jak można napisać program w Pythonie, który automatyzuje to zadanie:
+
+#Wymagania:
+#Python
+#Biblioteka openpyxl
+#Kroki:
+#Instalacja wymaganej biblioteki.
+#Odczytanie danych z arkusza kalkulacyjnego.
+#Przetworzenie danych i policzenie całkowitej populacji oraz liczby jednostek spisowych dla każdego hrabstwa.
+
+import openpyxl
+from collections import defaultdict
+
+def read_census_data(filename):
+    # Otwórz plik Excel
+    wb = openpyxl.load_workbook(filename)
+    sheet = wb.active
+
+    # Słownik do przechowywania danych
+    county_data = defaultdict(lambda: {'tracts': 0, 'pop': 0})
+
+    # Przejdź przez wszystkie wiersze z danymi
+    for row in range(2, sheet.max_row + 1):
+        state = sheet.cell(row=row, column=2).value
+        county = sheet.cell(row=row, column=3).value
+        pop = sheet.cell(row=row, column=4).value
+
+        # Aktualizuj dane dla hrabstwa
+        county_data[(state, county)]['tracts'] += 1
+        county_data[(state, county)]['pop'] += pop
+
+    return county_data
+
+def print_census_data(county_data):
+    for (state, county), data in county_data.items():
+        print(f'{state} - {county}: {data["tracts"]} tracts, {data["pop"]} population')
+
+if __name__ == "__main__":
+    filename = 'censuspopdata.xlsx'
+    county_data = read_census_data(filename)
+    print_census_data(county_data)
+
+#Wyjaśnienie krok po kroku:
+#Importowanie bibliotek:
+
+#openpyxl: Do odczytywania i przetwarzania plików Excel.
+#defaultdict z modułu collections: Do przechowywania danych o hrabstwach z domyślnymi wartościami.
+#Funkcja read_census_data:
+
+#Przyjmuje jeden argument: filename (nazwa pliku Excel).
+#Otwiera plik Excel za pomocą openpyxl.load_workbook().
+#Przetwarza arkusz aktywny (wb.active).
+#Tworzy słownik county_data, który przechowuje liczbę jednostek spisowych (tracts) i całkowitą populację (pop) dla każdego hrabstwa.
+#Iteruje przez wszystkie wiersze arkusza (zaczynając od drugiego wiersza, aby pominąć nagłówki).
+#Dla każdego wiersza odczytuje stan (state), hrabstwo (county) i populację (pop).
+#Aktualizuje dane w słowniku county_data dla danego hrabstwa.
+#Funkcja print_census_data:
+
+#Przyjmuje jeden argument: county_data (słownik z danymi hrabstw).
+#Iteruje przez wszystkie elementy słownika i drukuje informacje o liczbie jednostek spisowych i populacji dla każdego hrabstwa.
+#Główna część skryptu:
+
+#Definiuje nazwę pliku Excel (censuspopdata.xlsx).
+#Wywołuje funkcję read_census_data, aby odczytać dane z pliku.
+#Wywołuje funkcję print_census_data, aby wydrukować zebrane dane.
