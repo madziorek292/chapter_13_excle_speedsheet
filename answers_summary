@@ -1,0 +1,61 @@
+Pytania praktyczne
+Załóżmy, że masz obiekt Workbook w zmiennej wb, obiekt Worksheet w zmiennej sheet, obiekt Cell w zmiennej cell, obiekt Comment w zmiennej comm i obiekt Image w zmiennej img.
+
+Co zwraca funkcja openpyxl.load_workbook()?
+
+Zwraca obiekt Workbook.
+Co zawiera atrybut workbook wb.sheetnames?
+
+Zawiera listę nazw arkuszy w workbooku.
+Jak uzyskać obiekt Worksheet dla arkusza o nazwie 'Sheet1'?
+
+sheet = wb['Sheet1']
+Jak uzyskać obiekt Worksheet dla aktywnego arkusza workbooka?
+
+sheet = wb.active
+Jak uzyskać wartość w komórce C5?
+
+value = sheet['C5'].value
+Jak ustawić wartość w komórce C5 na "Hello"?
+
+sheet['C5'].value = "Hello"
+Jak uzyskać numer wiersza i kolumny komórki jako liczby całkowite?
+
+row = cell.row, column = cell.column
+Co przechowują atrybuty sheet.max_column i sheet.max_row arkusza, i jaki jest typ danych tych atrybutów?
+
+sheet.max_column i sheet.max_row przechowują liczbę ostatnich używanych kolumn i wierszy, odpowiednio. Typ danych tych atrybutów to int.
+Jeśli potrzebujesz uzyskać indeks liczbowy dla kolumny 'M', jaką funkcję musisz wywołać?
+
+openpyxl.utils.column_index_from_string('M')
+Jeśli potrzebujesz uzyskać nazwę kolumny dla indeksu 14, jaką funkcję musisz wywołać?
+
+openpyxl.utils.get_column_letter(14)
+Jak uzyskać krotkę wszystkich obiektów Cell od A1 do F1?
+
+cells = tuple(sheet['A1':'F1'][0])
+Jak zapisać workbook do pliku o nazwie example.xlsx?
+
+wb.save('example.xlsx')
+Jak ustawić formułę w komórce?
+
+cell.formula = 'SUM(A1:A10)'
+Jeśli chcesz uzyskać wynik formuły w komórce zamiast samej formuły, co musisz najpierw zrobić?
+
+Musisz ustawić data_only=True przy ładowaniu workbooka: wb = openpyxl.load_workbook('file.xlsx', data_only=True)
+Jak ustawić wysokość wiersza 5 na 100?
+
+sheet.row_dimensions[5].height = 100
+Jak ukryć kolumnę C?
+
+sheet.column_dimensions['C'].hidden = True
+Co to jest freeze pane?
+
+Freeze pane to funkcja, która pozwala zablokować określone wiersze lub kolumny w arkuszu, aby były widoczne podczas przewijania reszty arkusza.
+Jakie pięć funkcji i metod musisz wywołać, aby stworzyć wykres słupkowy?
+
+openpyxl.chart.BarChart()
+openpyxl.chart.Reference()
+chart.add_data()
+chart.set_categories()
+sheet.add_chart()
