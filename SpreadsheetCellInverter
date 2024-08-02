@@ -1,0 +1,40 @@
+#Wyjaśnienie
+#Napiszemy program, który odwróci wiersze i kolumny komórek w arkuszu kalkulacyjnym. Na przykład, wartość z wiersza 5, kolumny 3 zostanie przeniesiona do wiersza 3, kolumny 5 i odwrotnie. Aby to zrobić, użyjemy zagnieżdżonych pętli, aby odczytać dane z arkusza do struktury danych listy list. Następnie zapiszemy te dane do nowego arkusza, odwracając wiersze i kolumny.
+
+
+import openpyxl
+
+def invert_spreadsheet(filename):
+    # Załaduj istniejący skoroszyt
+    wb = openpyxl.load_workbook(filename)
+    sheet = wb.active
+
+    # Pobierz maksymalne wymiary arkusza
+    max_row = sheet.max_row
+    max_col = sheet.max_column
+
+    # Utwórz nowy skoroszyt do zapisu wyników
+    new_wb = openpyxl.Workbook()
+    new_sheet = new_wb.active
+
+    # Zagnieżdżone pętle do odczytu danych i ich inwersji
+    for row in range(1, max_row + 1):
+        for col in range(1, max_col + 1):
+            new_sheet.cell(row=col, column=row).value = sheet.cell(row=row, column=col).value
+
+    # Zapisz nowy skoroszyt
+    new_filename = f'inverted_{filename}'
+    new_wb.save(new_filename)
+    print(f'Arkusz został odwrócony i zapisany jako {new_filename}.')
+
+if __name__ == '__main__':
+    import sys
+    # Sprawdź, czy użytkownik podał odpowiednią liczbę argumentów
+    if len(sys.argv) != 2:
+        print('Użycie: python spreadsheetCellInverter.py filename')
+        sys.exit(1)
+    
+    filename = sys.argv[1]
+    
+    # Inwertuj arkusz
+    invert_spreadsheet(filename)
