@@ -1,0 +1,49 @@
+import sys
+import openpyxl
+from openpyxl import Workbook
+
+def insert_blank_rows(filename, N, M):
+    # Załaduj istniejący skoroszyt
+    wb = openpyxl.load_workbook(filename)
+    sheet = wb.active
+
+    # Nowy skoroszyt do zapisu wyników
+    new_wb = Workbook()
+    new_sheet = new_wb.active
+
+    # Kopiuj wiersze przed N do nowego arkusza
+    for row in range(1, N):
+        for col in range(1, sheet.max_column + 1):
+            new_sheet.cell(row=row, column=col).value = sheet.cell(row=row, column=col).value
+
+    # Wstaw M pustych wierszy
+    for row in range(N, sheet.max_row + 1):
+        for col in range(1, sheet.max_column + 1):
+            new_sheet.cell(row=row + M, column=col).value = sheet.cell(row=row, column=col).value
+
+    # Zapisz nowy skoroszyt
+    new_filename = f'new_{filename}'
+    new_wb.save(new_filename)
+    print(f'Wstawiono {M} puste wiersze od wiersza {N}. Zapisano jako {new_filename}.')
+
+if __name__ == '__main__':
+    # Sprawdź, czy użytkownik podał odpowiednią liczbę argumentów
+    if len(sys.argv) != 4:
+        print('Użycie: python blankRowInserter.py N M filename')
+        sys.exit(1)
+    
+    try:
+        # Pobierz i przekonwertuj argumenty
+        N = int(sys.argv[1])
+        M = int(sys.argv[2])
+        filename = sys.argv[3]
+        
+        if N < 1 or M < 0:
+            raise ValueError
+        
+        # Wstaw puste wiersze
+        insert_blank_rows(filename, N, M)
+        
+    except ValueError:
+        print('N musi być dodatnią liczbą całkowitą większą od 0, a M musi być nieujemną liczbą całkowitą')
+        sys.exit(1)
