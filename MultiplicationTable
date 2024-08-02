@@ -1,0 +1,48 @@
+import sys
+import openpyxl
+from openpyxl import Workbook
+
+def create_multiplication_table(n):
+    # Utwórz nowy skoroszyt i wybierz aktywny arkusz
+    wb = Workbook()
+    sheet = wb.active
+    sheet.title = 'Tabela Mnożenia'
+    
+    # Wypełnij arkusz tabelą mnożenia
+    for i in range(1, n + 1):
+        for j in range(1, n + 1):
+            cell = sheet.cell(row=i + 1, column=j + 1)
+            cell.value = i * j
+            
+            # Ustaw nagłówki
+            if i == 1:
+                header_cell = sheet.cell(row=1, column=j + 1)
+                header_cell.value = j
+            if j == 1:
+                header_cell = sheet.cell(row=i + 1, column=1)
+                header_cell.value = i
+    
+    # Zapisz skoroszyt
+    filename = f'tabela_mnozenia_{n}x{n}.xlsx'
+    wb.save(filename)
+    print(f'Tabela mnożenia została zapisana jako {filename}')
+
+if __name__ == '__main__':
+    # Sprawdź, czy użytkownik podał argument z wiersza poleceń
+    if len(sys.argv) != 2:
+        print('Użycie: py multiplicationTable.py N')
+        sys.exit(1)
+    
+    try:
+        # Przekonwertuj argument z wiersza poleceń na liczbę całkowitą
+        n = int(sys.argv[1])
+        
+        if n < 1:
+            raise ValueError
+        
+        # Utwórz tabelę mnożenia
+        create_multiplication_table(n)
+        
+    except ValueError:
+        print('N musi być dodatnią liczbą całkowitą')
+        sys.exit(1)
