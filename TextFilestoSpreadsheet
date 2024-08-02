@@ -1,0 +1,33 @@
+#Stworzymy program, który wczytuje zawartość kilku plików tekstowych i umieszcza te treści w arkuszu kalkulacyjnym, z jedną linią tekstu na wiersz. Linie z pierwszego pliku tekstowego będą w komórkach kolumny A, linie z drugiego pliku będą w komórkach kolumny B, itd.
+
+import sys
+import openpyxl
+from openpyxl import Workbook
+
+def text_files_to_spreadsheet(filenames):
+    # Utwórz nowy skoroszyt i wybierz aktywny arkusz
+    wb = Workbook()
+    sheet = wb.active
+    
+    # Iteracja przez pliki tekstowe
+    for col, filename in enumerate(filenames, start=1):
+        try:
+            with open(filename, 'r') as file:
+                lines = file.readlines()
+                for row, line in enumerate(lines, start=1):
+                    sheet.cell(row=row, column=col).value = line.strip()
+        except FileNotFoundError:
+            print(f'Plik {filename} nie został znaleziony.')
+    
+    # Zapisz skoroszyt
+    wb.save('text_files_to_spreadsheet.xlsx')
+    print('Zawartość plików tekstowych została zapisana w arkuszu kalkulacyjnym jako text_files_to_spreadsheet.xlsx')
+
+if __name__ == '__main__':
+    # Sprawdź, czy użytkownik podał odpowiednią liczbę argumentów
+    if len(sys.argv) < 2:
+        print('Użycie: python textFilesToSpreadsheet.py file1.txt file2.txt ...')
+        sys.exit(1)
+    
+    filenames = sys.argv[1:]
+    text_files_to_spreadsheet(filenames)
